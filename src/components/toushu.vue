@@ -2,7 +2,7 @@
   <div>
 
     <group gutter="0" class="content" style=" border:0.5px solid #f3f3f3;border-radius: 0.2rem;margin-top: 10px;">
-      <cell title="热线电话：" class="title">
+      <cell title="热线电话：400032105" class="title">
         <img slot="icon" width="30" style="display:block;margin-right:5px;" src="../assets/my6.png">
       </cell>
       <cell title="公众号：尚未开通" class="title">

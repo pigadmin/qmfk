@@ -7,7 +7,7 @@
     </div>
     <img src="../assets/index2.png" class="img2" style="height:2.3rem;">
     <div style="margin: 15px;">
-      <x-button type="primary" style="background: #327af2;border-radius: 36px;" link="/login">查看额度</x-button>
+      <x-button type="primary" style="background: #327af2;border-radius: 36px;" @click.native="login()">查看额度</x-button>
     </div>
     <div class="tips-container">
       <div class="tips-main">
@@ -27,18 +27,28 @@
 </template>
 
 <script>
-  import ViewBox from "vux/src/components/view-box/index";
-  import XButton from "vux/src/components/x-button/index";
-  import Box from "vux/src/components/box/index";
+    import ViewBox from "vux/src/components/view-box/index";
+    import XButton from "vux/src/components/x-button/index";
+    import Box from "vux/src/components/box/index";
 
-  export default {
-    name: "index",
-    components: {Box, XButton, ViewBox},
-    data() {
-      return {}
+    export default {
+        name: "index",
+        components: {Box, XButton, ViewBox},
+        data() {
+            return {}
+        }
+        , methods: {
+            login(res) {
+                console.log(this.config.islogin)
+                if (!this.config.islogin) {
+                    this.push("/login")
+                } else {
+                    this.push("/shehe")
+                }
+            }
+
+        }
     }
-    , methods: {}
-  }
 </script>
 
 <style scoped>

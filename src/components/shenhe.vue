@@ -3,43 +3,31 @@
     <img src="../assets/login1.jpg" width="100%">
 
     <group gutter="0">
-      <x-input style="border-radius: 33px;" placeholder="请输入您的手机" @on-change="change_phone" :max="11"
-               type="number"></x-input>
-      <x-input placeholder="请填写手机验证码" @on-change="change_code" :max="6" type="number">
+      <x-input placeholder="请输入您的手机" :value="17379731272" @on-change="change_phone"></x-input>
+      <x-input placeholder="请填写手机验证码" @on-change="change_code">
         <x-button :disabled="disable" slot="right" type="primary" mini style="background: #327af2;border-radius: 36px;"
                   @click.native="code()">{{codetext}}
         </x-button>
       </x-input>
     </group>
-<!--    <group gutter="0">-->
-<!--      <x-input style="border-radius: 33px;" placeholder="请输入您的手机" @on-change="change_phone" :max="11"-->
-<!--               type="number" value="17379731272"></x-input>-->
-<!--      <x-input placeholder="请填写手机验证码" @on-change="change_code" :max="6" type="number" value="631245">-->
-<!--        <x-button :disabled="disable" slot="right" type="primary" mini style="background: #327af2;border-radius: 36px;"-->
-<!--                  @click.native="code()">{{codetext}}-->
-<!--        </x-button>-->
-<!--      </x-input>-->
-<!--    </group>-->
 
     <div style="margin: 15px;">
       <x-button type="primary" style="background: #327af2;border-radius: 36px;" @click.native="login">登录</x-button>
     </div>
 
     <div style="text-align: center">
-      <check-icon :value.sync="check">我已阅读并同意</check-icon>
-      <a href="article" class="color_main">《注册协议和隐私条款》</a>
+      <check-icon :value.sync="check">我已阅读并同意<a href="/article" class="color_main">《注册协议和隐私条款》</a></check-icon>
     </div>
-    <!--    <div-->
-    <!--      style="display: block; width: 100%; margin: 0px auto; font-size: 14px; color: rgb(203, 203, 203); line-height: 24px; text-align: center;">-->
-    <!--      投诉热线 <a href="tel:"><span class="color_main" style="margin-left: 10px;"></span></a></div> -->
+<!--    <div-->
+<!--      style="display: block; width: 100%; margin: 0px auto; font-size: 14px; color: rgb(203, 203, 203); line-height: 24px; text-align: center;">-->
+<!--      投诉热线 <a href="tel:"><span class="color_main" style="margin-left: 10px;"></span></a></div> -->
     <div
       style="display: block; width: 100%; margin: 0px auto; font-size: 14px; color: rgb(203, 203, 203); line-height: 24px; text-align: center;">
-      全民放款
-    </div>
-    <!--    <div-->
-    <!--      style="display: block; width: 100%; margin: 0px auto; font-size: 14px; color: rgb(203, 203, 203); line-height: 24px; text-align: center;">-->
-    <!--      全民放款-->
-    <!--    </div>-->
+      全民放款</div>
+<!--    <div-->
+<!--      style="display: block; width: 100%; margin: 0px auto; font-size: 14px; color: rgb(203, 203, 203); line-height: 24px; text-align: center;">-->
+<!--      全民放款-->
+<!--    </div>-->
     <div
       style="display: block; width: 100%; margin: 0px auto; font-size: 14px; color: rgb(203, 203, 203); line-height: 24px; text-align: center;">
       预估额度仅供参考，具体审批以持牌资方为准
@@ -67,9 +55,6 @@
                 check: true
             }
         },
-        destroyed() {
-            clearInterval(v)
-        },
         methods: {
             change_phone(res) {
                 this.phone = res
@@ -79,48 +64,46 @@
                 console.log("code" + this.codes)
             },
             login() {
-                var that = this
                 if (!this.check) {
                     this.confirm('', '请阅读并同意下方条款', false)
                     return;
                 }
-                if (this.phone == '') {
-                    this.confirm('', '电话号码不能为空', false)
-                    return;
-                }
-                if (this.codes == '') {
-                    this.confirm('', '验证码不能为空', false)
-                    return;
-                }
-                var api = 'login'
-                // this.push("/info")
-                // return;
-                // var api = 'register'
-                var parm = {}
-                // parm.phone=this.phone
-                parm.mobile = this.phone
-                parm.code = this.codes
-                this.api_post(api, parm, function (res) {
-                    console.log("@@" + res.msg)
-                    that.config.islogin = true
-                    that.push("/info")
-                }, function (res) {
-                    if (res.msg == '用户不存在') {
-                        that.register();
-                    } else {
-                        that.confirm('', res.msg, false)
-                    }
-                })
 
-            }, register() {
+                // if (this.phone == '') {
+                //     this.confirm('', '电话号码不能为空', false)
+                //     return;
+                // }
+                // if (this.codes == '') {
+                //     this.confirm('', '验证码不能为空', false)
+                //     return;
+                // }
+                // var api = 'login?mobile=' + this.phone + "&code=402512" + this.codes
+                this.push("/info")
+                return;
                 var api = 'register'
-                var parm = {}
-                parm.phone = this.phone
-                this.api_post(api, parm, function (res) {
-                    // console.log(res)
-                    login();
-                })
+                var url = this.config.url + api
+                console.log(url)
+                this.$http({
+                    body:{
+                        phone:this.phone,
+                    }
+                }).post(url).then(function (res) {
+                    console.log(res.data)
+                    if (res.data.code == 0) {
+                        success(res.data)
+                    } else {
+                        if (fail != null) {
+                            fail(res.data)
+                        } else {
+                            this.toast(res.data.msg,'warn','center')
+                        }
+                    }
+                }, function (res) {
+                    this.toast(res.data.msg)
+                });
+
             },
+
             code(res) {
                 var that = this
 
@@ -134,11 +117,8 @@
                     return;
                 }
                 var api = 'register_code?phone=' + this.phone
-                var parm = {}
-                parm.phone = this.phone
-                this.api_post(api, parm, function (res) {
+                this.api_post(api, function (res) {
                     console.log(res)
-                    that.toast("发送成功")
                     v = setInterval(function () {
                         if (that.timout == 0) {
                             clearInterval(v)
