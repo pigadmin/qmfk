@@ -21,12 +21,16 @@ import shenhe from './components/shenhe'
 import article from './components/article'
 import order_list from './components/order_list'
 
-import {Cell} from 'vux'
-import {Group} from 'vux'
+import {Cell, Loading, Group, XInput, XButton, Spinner,PopupRadio} from 'vux'
 
+Vue.component('popup-radio', PopupRadio)
+Vue.component('spinner', Spinner)
+Vue.component('x-input', XInput)
+Vue.component('x-input', XInput)
+Vue.component('loading', Loading)
 Vue.component('group', Group)
 Vue.component('cell', Cell)
-
+Vue.component('x-button', XButton)
 
 import TITLE from 'vue-wechat-title'
 import REM from 'lib-flexible/flexible'
@@ -36,7 +40,9 @@ Vue.use(REM)
 
 import {ToastPlugin} from 'vux'
 import {ConfirmPlugin} from 'vux'
+import {LoadingPlugin} from 'vux'
 
+Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)
 
@@ -44,14 +50,26 @@ Vue.use(ConfirmPlugin)
 Vue.prototype.config = {
   // url: 'http://120.79.174.1:9097/zcm/app',
   url: 'http://121.127.249.26:9097/zcm/app/',
-  islogin: false,
 };
+// var now=localStorage.getItem("now")
+// if (now== null){
+//   localStorage.setItem("now")
+// }
+setTimeout(function () {
+  // console.log("清除localStorage任务")
+  localStorage.clear()
+}, 3600 * 1000)
+// }, 60 * 1000)
 
 Vue.prototype.api_post = function (api, parm, success, fail) {
+
   var url = this.config.url + api
-  console.log(url)
+  // console.log(url)
+  var token = localStorage.getItem("token");
+  if (token != null) {
+    parm.token = token
+  }
   this.$http.post(url, parm).then(function (res) {
-    // console.log(res.data)
     if (res.data.code == 0) {
       success(res.data)
     } else {
@@ -101,11 +119,11 @@ Vue.prototype.confirm = function (title, text, showCancel, time) {
 const routes = [{
   path: '/',
   component: index,
-  meta: {title: '首页'}
+  meta: {title: '首页', showfoot: true}
 }, {
   path: '/my',
   component: my,
-  meta: {title: '个人中心'}
+  meta: {title: '个人中心', showfoot: true}
 }, {
   path: '/about',
   component: about,
@@ -145,7 +163,7 @@ const routes = [{
 }]
 
 const router = new VueRouter({
-  mode: 'history',
+  // mode: 'history',
   routes
 })
 

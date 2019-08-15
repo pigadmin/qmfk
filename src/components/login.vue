@@ -11,15 +11,15 @@
         </x-button>
       </x-input>
     </group>
-<!--    <group gutter="0">-->
-<!--      <x-input style="border-radius: 33px;" placeholder="请输入您的手机" @on-change="change_phone" :max="11"-->
-<!--               type="number" value="17379731272"></x-input>-->
-<!--      <x-input placeholder="请填写手机验证码" @on-change="change_code" :max="6" type="number" value="631245">-->
-<!--        <x-button :disabled="disable" slot="right" type="primary" mini style="background: #327af2;border-radius: 36px;"-->
-<!--                  @click.native="code()">{{codetext}}-->
-<!--        </x-button>-->
-<!--      </x-input>-->
-<!--    </group>-->
+    <!--    <group gutter="0">-->
+    <!--      <x-input style="border-radius: 33px;" placeholder="请输入您的手机" @on-change="change_phone" :max="11"-->
+    <!--               type="number" value="17379731272"></x-input>-->
+    <!--      <x-input placeholder="请填写手机验证码" @on-change="change_code" :max="6" type="number" value="631245">-->
+    <!--        <x-button :disabled="disable" slot="right" type="primary" mini style="background: #327af2;border-radius: 36px;"-->
+    <!--                  @click.native="code()">{{codetext}}-->
+    <!--        </x-button>-->
+    <!--      </x-input>-->
+    <!--    </group>-->
 
     <div style="margin: 15px;">
       <x-button type="primary" style="background: #327af2;border-radius: 36px;" @click.native="login">登录</x-button>
@@ -27,7 +27,7 @@
 
     <div style="text-align: center">
       <check-icon :value.sync="check">我已阅读并同意</check-icon>
-      <a href="article" class="color_main">《注册协议和隐私条款》</a>
+      <a @click="article" style="color: #4C7BD3;">《注册协议和隐私条款》</a>
     </div>
     <!--    <div-->
     <!--      style="display: block; width: 100%; margin: 0px auto; font-size: 14px; color: rgb(203, 203, 203); line-height: 24px; text-align: center;">-->
@@ -73,10 +73,10 @@
         methods: {
             change_phone(res) {
                 this.phone = res
-                console.log("phone" + this.phone)
+                // console.log("phone" + this.phone)
             }, change_code(res) {
                 this.codes = res
-                console.log("code" + this.codes)
+                // console.log("code" + this.codes)
             },
             login() {
                 var that = this
@@ -101,30 +101,40 @@
                 parm.mobile = this.phone
                 parm.code = this.codes
                 this.api_post(api, parm, function (res) {
-                    console.log("@@" + res.msg)
+                    // console.log(res)
+                    localStorage.setItem("islogin",true)
+                    localStorage.setItem("token",res.token)
                     that.config.islogin = true
-                    that.push("/info")
-                }, function (res) {
-                    if (res.msg == '用户不存在') {
-                        that.register();
-                    } else {
-                        that.confirm('', res.msg, false)
-                    }
-                })
+                    that.replace("/info")
+                }
+                // , function (res) {
+                //     that.register();
+                //     // if (res.msg == '用户不存在') {
+                //     //
+                //     // } else {
+                //     //     that.confirm('', res.msg, false)
+                //     // }
+                // }
+                )
 
             }, register() {
+                var that = this
                 var api = 'register'
                 var parm = {}
                 parm.phone = this.phone
                 this.api_post(api, parm, function (res) {
                     // console.log(res)
-                    login();
+                    that.login();
                 })
             },
             code(res) {
+                // console.log(this.phone)
                 var that = this
+                // that.disable = false
+                // setTimeout(function () {
+                //     that.disable = true
+                // }, 1000)
 
-                console.log(this.phone)
                 if (this.phone == '') {
                     this.confirm('', '请填写电话号码', false)
                     return;
@@ -133,11 +143,13 @@
                     this.confirm('', '请填写正确的11位电话号码', false)
                     return;
                 }
+
                 var api = 'register_code?phone=' + this.phone
+                // console.log(api)
                 var parm = {}
                 parm.phone = this.phone
                 this.api_post(api, parm, function (res) {
-                    console.log(res)
+                    // console.log(res)
                     that.toast("发送成功")
                     v = setInterval(function () {
                         if (that.timout == 0) {
@@ -148,7 +160,7 @@
                                 that.disable = false
                             }
                         } else {
-                            console.log(that.timout)
+                            // console.log(that.timout)
                             if (!that.disable) {
                                 that.disable = true
                             }
@@ -159,7 +171,9 @@
                     }, 1000)
                 })
 
-            },
+            }, article() {
+                this.push("/article")
+            }
         }
 
     }

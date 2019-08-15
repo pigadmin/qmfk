@@ -58,10 +58,10 @@
         methods: {
             change_phone(res) {
                 this.phone = res
-                console.log("phone" + this.phone)
+                // console.log("phone" + this.phone)
             }, change_code(res) {
                 this.codes = res
-                console.log("code" + this.codes)
+                // console.log("code" + this.codes)
             },
             login() {
                 if (!this.check) {
@@ -82,13 +82,13 @@
                 return;
                 var api = 'register'
                 var url = this.config.url + api
-                console.log(url)
+                // console.log(url)
                 this.$http({
                     body:{
                         phone:this.phone,
                     }
                 }).post(url).then(function (res) {
-                    console.log(res.data)
+                    // console.log(res.data)
                     if (res.data.code == 0) {
                         success(res.data)
                     } else {
@@ -107,7 +107,7 @@
             code(res) {
                 var that = this
 
-                console.log(this.phone)
+                // console.log(this.phone)
                 if (this.phone == '') {
                     this.confirm('', '请填写电话号码', false)
                     return;
@@ -118,7 +118,7 @@
                 }
                 var api = 'register_code?phone=' + this.phone
                 this.api_post(api, function (res) {
-                    console.log(res)
+                    // console.log(res)
                     v = setInterval(function () {
                         if (that.timout == 0) {
                             clearInterval(v)
@@ -128,7 +128,7 @@
                                 that.disable = false
                             }
                         } else {
-                            console.log(that.timout)
+                            // console.log(that.timout)
                             if (!that.disable) {
                                 that.disable = true
                             }

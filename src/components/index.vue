@@ -7,7 +7,7 @@
     </div>
     <img src="../assets/index2.png" class="img2" style="height:2.3rem;">
     <div style="margin: 15px;">
-      <x-button type="primary" style="background: #327af2;border-radius: 36px;" @click.native="login()">查看额度</x-button>
+      <x-button type="primary" style="background: #327af2;border-radius: 36px;" @click.native="login">查看额度</x-button>
     </div>
     <div class="tips-container">
       <div class="tips-main">
@@ -18,9 +18,8 @@
       </div>
     </div>
     <div style="position: relative;"><img
-      src="../assets/index3.png" class="img img3" style="height:3.5rem;"> <a
-      href="/about"
-      style="width: 21%; height: 10%; position: absolute; top: 23%; right: 7%;"></a></div>
+      src="../assets/index3.png" class="img img3" style="height:3.5rem;"> <a @click="about"  style="width: 21%; height: 10%; position: absolute; top: 23%; right: 7%;"></a>
+    </div>
 
   </div>
 
@@ -36,15 +35,43 @@
         components: {Box, XButton, ViewBox},
         data() {
             return {}
+        },created() {
+        }, mounted() {
         }
         , methods: {
             login(res) {
-                console.log(this.config.islogin)
-                if (!this.config.islogin) {
+                var that=this
+                var token =localStorage.getItem("token")
+                // console.log(token)
+                if (token==null){
                     this.push("/login")
-                } else {
-                    this.push("/shehe")
+                    return;
                 }
+                var api = 'user-info?token=' + localStorage.getItem("token")
+                var parm = {}
+                this.api_post(api, parm, function (res) {
+                    var status = res.info.status
+                    // console.log("status：" + status)
+                    if (status == "init") {//注册
+                        that.push("/info")
+                    } else if (status == "bind_card") {//已经绑卡
+                        that.push("/edu")
+                    } else if (status == "submit_info") {//已提交信息
+                        that.push("/edu")
+                    }else if (status == "apply_confirm") {//同意申请
+                        that.push("/edu")
+                    }else if (status == "audit_pass") {//审核通过
+                        that.push("/edu")
+                    }else if (status == "audit_failure") {//审核失败
+                        that.toast("审核失败请联系客服", "text")
+                    }
+                },function () {
+                    // console.log("清除localStorage")
+                    localStorage.clear()
+                    that.push("/login")
+                })
+            }, about() {
+                this.push("/about")
             }
 
         }
